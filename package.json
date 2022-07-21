@@ -146,5 +146,15 @@
   },
   "overrides": {
     "webpack": "5.71.0"
-  }
+  },
+  "main": "jest.conf.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mauricioassisrt/jhipster-cidade-estado.git"
+  },
+  "author": "mauricio",
+  "bugs": {
+    "url": "https://github.com/mauricioassisrt/jhipster-cidade-estado/issues"
+  },
+  "homepage": "https://github.com/mauricioassisrt/jhipster-cidade-estado#readme"
 }
