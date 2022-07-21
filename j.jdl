@@ -1,0 +1,16 @@
+
+entity Estado {
+	nomeEstado String  required minlength(3) unique
+    sigla String required maxlength(2) minlength(2) unique
+}
+
+entity Cidade {
+	nomeCidade String required minlength(3)
+    observacao String minlength(20)
+}
+
+relationship ManyToOne {
+  Cidade {estado(sigla)} to Estado
+  Cidade {user(login)} to User
+}
+    

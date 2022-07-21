@@ -1,0 +1,43 @@
+{
+  "applications": "*",
+  "changelogDate": "20220714002003",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "cidade",
+  "fields": [
+    {
+      "fieldName": "nomeCidade",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength"],
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "observacao",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength"],
+      "fieldValidateRulesMinlength": "20"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Cidade",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "sigla",
+      "otherEntityName": "estado",
+      "otherEntityRelationshipName": "cidade",
+      "relationshipName": "estado",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "cidade",
+      "relationshipName": "user",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "no"
+}

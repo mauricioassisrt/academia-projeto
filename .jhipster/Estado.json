@@ -1,0 +1,29 @@
+{
+  "applications": "*",
+  "changelogDate": "20220714002002",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "estado",
+  "fields": [
+    {
+      "fieldName": "nomeEstado",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "unique"],
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "sigla",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength", "minlength", "unique"],
+      "fieldValidateRulesMaxlength": "2",
+      "fieldValidateRulesMinlength": "2"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Estado",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}
