@@ -1115,6 +1115,7 @@
             <properties>
                 <!-- default Spring profiles -->
                 <spring.profiles.active>prod${profile.api-docs}${profile.tls}${profile.e2e}${profile.no-liquibase}</spring.profiles.active>
+                <spring.profiles.active>local,no-liquibase</spring.profiles.active>
             </properties>
         </profile>
         <profile>
