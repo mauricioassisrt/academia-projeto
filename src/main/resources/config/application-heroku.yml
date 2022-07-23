@@ -12,7 +12,7 @@
 
 eureka:
   instance:
-    hostname: damp-retreat-84923.herokuapp.com
+    hostname: enigmatic-badlands-97893.herokuapp.com
     non-secure-port: 80
     prefer-ip-address: false
 

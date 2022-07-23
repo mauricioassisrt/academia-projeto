@@ -21,7 +21,7 @@
     "enableTranslation": true,
     "entities": ["Estado", "Cidade"],
     "entitySuffix": "",
-    "herokuAppName": "damp-retreat-84923",
+    "herokuAppName": "enigmatic-badlands-97893",
     "herokuDeployType": "jar",
     "herokuJavaVersion": "11",
     "jhiPrefix": "jhi",
