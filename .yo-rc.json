@@ -21,7 +21,7 @@
     "enableTranslation": true,
     "entities": ["Estado", "Cidade"],
     "entitySuffix": "",
-    "herokuAppName": "enigmatic-badlands-97893",
+    "herokuAppName": "murmuring-harbor-57334",
     "herokuDeployType": "jar",
     "herokuJavaVersion": "11",
     "jhiPrefix": "jhi",

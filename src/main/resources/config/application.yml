@@ -42,7 +42,7 @@ management:
             'prometheus',
             'threaddump',
             'caches',
-            'liquibase',
+
           ]
   endpoint:
     health:
