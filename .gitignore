@@ -157,6 +157,3 @@ Desktop.ini
 ######################
 /coverage/
 /.nyc_output/
-/.mvn/
-/.devcontainer/
-/src/test/
