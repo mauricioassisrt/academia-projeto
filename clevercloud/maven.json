@@ -1,9 +1,0 @@
- {
-     "construir": {
-         "tipo": "maven",
-         "goal": "-Pprod package -DskipTests"
-     },
-     "implantar": {
-     "jarName": "./target/academia-0.0.1-SNAPSHOT.jar"
-     }
- }
