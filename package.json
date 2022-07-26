@@ -89,6 +89,7 @@
     "bootstrap": "5.1.3",
     "bootswatch": "5.1.3",
     "dayjs": "1.11.0",
+    "generator-jhipster-clevercloud": "^0.3.0",
     "ngx-infinite-scroll": "13.0.1",
     "ngx-webstorage": "9.0.0",
     "rxjs": "7.5.5",
@@ -146,15 +147,5 @@
   },
   "overrides": {
     "webpack": "5.71.0"
-  },
-  "main": "jest.conf.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mauricioassisrt/jhipster-cidade-estado.git"
-  },
-  "author": "mauricio",
-  "bugs": {
-    "url": "https://github.com/mauricioassisrt/jhipster-cidade-estado/issues"
-  },
-  "homepage": "https://github.com/mauricioassisrt/jhipster-cidade-estado#readme"
+  }
 }
