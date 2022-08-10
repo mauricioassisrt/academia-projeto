@@ -23,7 +23,7 @@ Navbar
   .dropdown-item.active:hover {
     background-color: $dark;
   }
-
+  background-color: $dark !important;
   a.nav-link {
     font-weight: 400;
   }
