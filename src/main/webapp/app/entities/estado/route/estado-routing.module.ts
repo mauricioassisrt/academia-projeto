@@ -11,6 +11,9 @@ const estadoRoute: Routes = [
   {
     path: '',
     component: EstadoComponent,
+    data: {
+      defaultSort: 'id,asc',
+    },
     canActivate: [UserRouteAccessService],
   },
   {

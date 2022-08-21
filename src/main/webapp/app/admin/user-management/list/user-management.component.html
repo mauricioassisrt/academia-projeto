@@ -1,8 +1,8 @@
-<div>
+<div class="fundo-branco">
   <h2>
-    <span id="user-management-page-heading" jhiTranslate="userManagement.home.title" data-cy="userManagementPageHeading">Users</span>
+    <span class="margin-tabela" id="user-management-page-heading" jhiTranslate="userManagement.home.title" data-cy="userManagementPageHeading">Users</span>
 
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end margin-tabela">
       <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span jhiTranslate="userManagement.home.refreshListLabel">Refresh List</span>
@@ -17,8 +17,8 @@
 
   <jhi-alert></jhi-alert>
 
-  <div class="table-responsive" *ngIf="users">
-    <table class="table table-striped" aria-describedby="user-management-page-heading">
+  <div class="table-responsive margin-tabela" *ngIf="users">
+    <table class="table table-striped c" aria-describedby="user-management-page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="transition()">
           <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>

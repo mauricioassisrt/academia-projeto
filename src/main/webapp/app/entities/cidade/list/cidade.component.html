@@ -1,9 +1,9 @@
-<div>
-  <h2 id="page-heading" data-cy="CidadeHeading">
-    <span jhiTranslate="academiaApp.cidade.home.title">Cidades</span>
+<div class="fundo-branco ">
+  <h2 id="page-heading " data-cy="CidadeHeading">
+    <span class="margin-tabela" jhiTranslate="academiaApp.cidade.home.title">Cidades</span>
 
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
+    <div class="d-flex justify-content-end margin-tabela">
+      <button class="btn btn-info me-2" (click)="loadPage()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span jhiTranslate="academiaApp.cidade.home.refreshListLabel">Refresh List</span>
       </button>
@@ -28,15 +28,23 @@
     <span jhiTranslate="academiaApp.cidade.home.notFound">No cidades found</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="cidades && cidades.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
+  <div class="table-responsive margin-tabela" id="entities" *ngIf="cidades && cidades.length > 0">
+    <table class="table table-striped " aria-describedby="page-heading">
       <thead>
-        <tr>
-          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
-          <th scope="col"><span jhiTranslate="academiaApp.cidade.nomeCidade">Nome Cidade</span></th>
-          <th scope="col"><span jhiTranslate="academiaApp.cidade.observacao">Observacao</span></th>
-          <th scope="col"><span jhiTranslate="academiaApp.cidade.estado">Estado</span></th>
-          <th scope="col"><span jhiTranslate="academiaApp.cidade.user">User</span></th>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
+          <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="nomeCidade">
+            <span jhiTranslate="academiaApp.cidade.nomeCidade">Nome Cidade</span> <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th scope="col" jhiSortBy="observacao">
+            <span jhiTranslate="academiaApp.cidade.observacao">Observacao</span> <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th scope="col" jhiSortBy="estado.sigla">
+            <span jhiTranslate="academiaApp.cidade.estado">Estado</span> <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th scope="col" jhiSortBy="user.login">
+            <span jhiTranslate="academiaApp.cidade.user">User</span> <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -76,5 +84,23 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div *ngIf="cidades && cidades.length > 0">
+    <div class="d-flex justify-content-center">
+      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <ngb-pagination class="fundo-paginacao-click"
+        [collectionSize]="totalItems"
+        [(page)]="ngbPaginationPage"
+        [pageSize]="itemsPerPage"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="loadPage($event)"
+      ></ngb-pagination>
+    </div>
   </div>
 </div>

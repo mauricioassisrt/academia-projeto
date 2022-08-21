@@ -1,10 +1,10 @@
 <jhi-page-ribbon></jhi-page-ribbon>
 
-<div>
+<div *jhiHasAnyAuthority="'ROLE_USER'">
   <router-outlet name="navbar"></router-outlet>
 </div>
 
-<div class="container-fluid " style='background-image: url(content/images/backgroud-login.jpg); background-repeat: no-repeat; background-size: cover;'>
+<div class="container-fluid fundo-imagem" >
   <div class="">
     <router-outlet></router-outlet>
   </div>

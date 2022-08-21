@@ -11,6 +11,9 @@ const cidadeRoute: Routes = [
   {
     path: '',
     component: CidadeComponent,
+    data: {
+      defaultSort: 'id,asc',
+    },
     canActivate: [UserRouteAccessService],
   },
   {
