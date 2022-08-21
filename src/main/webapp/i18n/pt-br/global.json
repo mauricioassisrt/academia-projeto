@@ -50,7 +50,7 @@
       "info": {
         "authenticated": {
           "prefix": "Se deseja ",
-          "link": "entrar",
+          "link": "entrar no sistema clique aqui!",
           "suffix": ", utilize as seguintes contas padrões:<br/>- Administrador (usuário=\"admin\" and senha=\"admin\") <br/>- Usuário (usuário=\"user\" e senha=\"user\")."
         },
         "register": {

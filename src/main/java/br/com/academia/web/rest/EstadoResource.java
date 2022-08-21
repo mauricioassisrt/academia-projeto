@@ -1,10 +1,18 @@
 package br.com.academia.web.rest;
 
-import br.com.academia.domain.Cidade;
 import br.com.academia.domain.Estado;
 import br.com.academia.repository.EstadoRepository;
-import br.com.academia.security.SecurityUtils;
+import br.com.academia.service.EstadoQueryService;
+import br.com.academia.service.EstadoService;
+import br.com.academia.service.criteria.EstadoCriteria;
 import br.com.academia.web.rest.errors.BadRequestAlertException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,28 +20,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 /**
  * REST controller for managing {@link br.com.academia.domain.Estado}.
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class EstadoResource {
 
     private final Logger log = LoggerFactory.getLogger(EstadoResource.class);
@@ -43,10 +40,16 @@ public class EstadoResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final EstadoService estadoService;
+
     private final EstadoRepository estadoRepository;
 
-    public EstadoResource(EstadoRepository estadoRepository) {
+    private final EstadoQueryService estadoQueryService;
+
+    public EstadoResource(EstadoService estadoService, EstadoRepository estadoRepository, EstadoQueryService estadoQueryService) {
+        this.estadoService = estadoService;
         this.estadoRepository = estadoRepository;
+        this.estadoQueryService = estadoQueryService;
     }
 
     /**
@@ -62,7 +65,7 @@ public class EstadoResource {
         if (estado.getId() != null) {
             throw new BadRequestAlertException("A new estado cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Estado result = estadoRepository.save(estado);
+        Estado result = estadoService.save(estado);
         return ResponseEntity
             .created(new URI("/api/estados/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -72,7 +75,7 @@ public class EstadoResource {
     /**
      * {@code PUT  /estados/:id} : Updates an existing estado.
      *
-     * @param id     the id of the estado to save.
+     * @param id the id of the estado to save.
      * @param estado the estado to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated estado,
      * or with status {@code 400 (Bad Request)} if the estado is not valid,
@@ -96,7 +99,7 @@ public class EstadoResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Estado result = estadoRepository.save(estado);
+        Estado result = estadoService.update(estado);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, estado.getId().toString()))
@@ -106,7 +109,7 @@ public class EstadoResource {
     /**
      * {@code PATCH  /estados/:id} : Partial updates given fields of an existing estado, field will ignore if it is null
      *
-     * @param id     the id of the estado to save.
+     * @param id the id of the estado to save.
      * @param estado the estado to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated estado,
      * or with status {@code 400 (Bad Request)} if the estado is not valid,
@@ -114,7 +117,7 @@ public class EstadoResource {
      * or with status {@code 500 (Internal Server Error)} if the estado couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/estados/{id}", consumes = {"application/json", "application/merge-patch+json"})
+    @PatchMapping(value = "/estados/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Estado> partialUpdateEstado(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Estado estado
@@ -131,19 +134,7 @@ public class EstadoResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Estado> result = estadoRepository
-            .findById(estado.getId())
-            .map(existingEstado -> {
-                if (estado.getNomeEstado() != null) {
-                    existingEstado.setNomeEstado(estado.getNomeEstado());
-                }
-                if (estado.getSigla() != null) {
-                    existingEstado.setSigla(estado.getSigla());
-                }
-
-                return existingEstado;
-            })
-            .map(estadoRepository::save);
+        Optional<Estado> result = estadoService.partialUpdate(estado);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -154,12 +145,31 @@ public class EstadoResource {
     /**
      * {@code GET  /estados} : get all the estados.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of estados in body.
      */
     @GetMapping("/estados")
-    public List<Estado> getAlEstados(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
-        log.debug("REST request to get all Cidades");
-        return estadoRepository.findAll();
+    public ResponseEntity<List<Estado>> getAllEstados(
+        EstadoCriteria criteria,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get Estados by criteria: {}", criteria);
+        Page<Estado> page = estadoQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /estados/count} : count all the estados.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/estados/count")
+    public ResponseEntity<Long> countEstados(EstadoCriteria criteria) {
+        log.debug("REST request to count Estados by criteria: {}", criteria);
+        return ResponseEntity.ok().body(estadoQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -171,7 +181,7 @@ public class EstadoResource {
     @GetMapping("/estados/{id}")
     public ResponseEntity<Estado> getEstado(@PathVariable Long id) {
         log.debug("REST request to get Estado : {}", id);
-        Optional<Estado> estado = estadoRepository.findById(id);
+        Optional<Estado> estado = estadoService.findOne(id);
         return ResponseUtil.wrapOrNotFound(estado);
     }
 
@@ -184,7 +194,7 @@ public class EstadoResource {
     @DeleteMapping("/estados/{id}")
     public ResponseEntity<Void> deleteEstado(@PathVariable Long id) {
         log.debug("REST request to delete Estado : {}", id);
-        estadoRepository.deleteById(id);
+        estadoService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

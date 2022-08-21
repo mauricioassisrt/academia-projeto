@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  * Spring Data SQL repository for the Cidade entity.
  */
 @Repository
-public interface CidadeRepository extends JpaRepository<Cidade, Long> {
+public interface CidadeRepository extends JpaRepository<Cidade, Long>, JpaSpecificationExecutor<Cidade> {
     @Query("select cidade from Cidade cidade where cidade.user.login = ?#{principal.username}")
     List<Cidade> findByUserIsCurrentUser();
 

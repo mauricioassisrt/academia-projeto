@@ -1,8 +1,15 @@
-<div>
-  <div class="d-flex justify-content-center">
-    <div class="col-lg-6 col-md-8 col-sm-10">
-      <h1 jhiTranslate="login.title" data-cy="loginTitle">Sign in</h1>
-      <div class="alert alert-danger" *ngIf="authenticationError" jhiTranslate="login.messages.error.authentication" data-cy="loginError">
+<div class="d-flex justify-content-center">
+
+
+  <div class="card  fundo-login" >
+    <div class="card-body">
+      <div class="register-logo">
+        <b>Academia</b>
+      </div>
+
+
+      <div class="alert alert-danger" *ngIf="authenticationError" jhiTranslate="login.messages.error.authentication"
+           data-cy="loginError">
         <strong>Failed to sign in!</strong> Please check your credentials and try again.
       </div>
       <form class="form" role="form" (ngSubmit)="login()" [formGroup]="loginForm">
@@ -35,23 +42,32 @@
 
         <div class="form-check">
           <label class="form-check-label" for="rememberMe">
-            <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" formControlName="rememberMe" />
+            <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe"
+                   formControlName="rememberMe"/>
             <span jhiTranslate="login.form.rememberme">Remember me</span>
           </label>
         </div>
 
-        <button type="submit" class="btn btn-primary" jhiTranslate="login.form.button" data-cy="submit">Sign in</button>
+        <button type="submit" class="btn btn-primary" jhiTranslate="login.form.button" data-cy="submit">Sign in
+        </button>
       </form>
-      <div class="mt-3 alert alert-warning">
-        <a class="alert-link" routerLink="/account/reset/request" jhiTranslate="login.password.forgot" data-cy="forgetYourPasswordSelector"
-          >Did you forget your password?</a
-        >
-      </div>
 
-      <div class="alert alert-warning">
-        <span jhiTranslate="global.messages.info.register.noaccount">You don't have an account yet?</span>
-        <a class="alert-link" routerLink="/account/register" jhiTranslate="global.messages.info.register.link">Register a new account</a>
+      <a routerLink="/account/reset/request" jhiTranslate="login.password.forgot"
+         data-cy="forgetYourPasswordSelector"
+      >Did you forget your password?</a
+      >
+      <br/>
+
+
+      <span jhiTranslate="global.messages.info.register.noaccount">You don't have an account yet?</span> <br>
+
+
+      <a routerLink="/account/register" jhiTranslate="global.messages.info.register.link">Register
+        a new account
+      </a>
+
+    </div>
       </div>
     </div>
-  </div>
-</div>
+
+

@@ -8,7 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import br.com.academia.IntegrationTest;
 import br.com.academia.domain.Cidade;
+import br.com.academia.domain.Estado;
+import br.com.academia.domain.User;
 import br.com.academia.repository.CidadeRepository;
+import br.com.academia.service.CidadeService;
+import br.com.academia.service.criteria.CidadeCriteria;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -54,6 +58,9 @@ class CidadeResourceIT {
 
     @Mock
     private CidadeRepository cidadeRepositoryMock;
+
+    @Mock
+    private CidadeService cidadeServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -160,20 +167,20 @@ class CidadeResourceIT {
 
     @SuppressWarnings({ "unchecked" })
     void getAllCidadesWithEagerRelationshipsIsEnabled() throws Exception {
-        when(cidadeRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(cidadeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restCidadeMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
 
-        verify(cidadeRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+        verify(cidadeServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @SuppressWarnings({ "unchecked" })
     void getAllCidadesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(cidadeRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(cidadeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restCidadeMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
 
-        verify(cidadeRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+        verify(cidadeServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
@@ -190,6 +197,271 @@ class CidadeResourceIT {
             .andExpect(jsonPath("$.id").value(cidade.getId().intValue()))
             .andExpect(jsonPath("$.nomeCidade").value(DEFAULT_NOME_CIDADE))
             .andExpect(jsonPath("$.observacao").value(DEFAULT_OBSERVACAO));
+    }
+
+    @Test
+    @Transactional
+    void getCidadesByIdFiltering() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        Long id = cidade.getId();
+
+        defaultCidadeShouldBeFound("id.equals=" + id);
+        defaultCidadeShouldNotBeFound("id.notEquals=" + id);
+
+        defaultCidadeShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultCidadeShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultCidadeShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultCidadeShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByNomeCidadeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where nomeCidade equals to DEFAULT_NOME_CIDADE
+        defaultCidadeShouldBeFound("nomeCidade.equals=" + DEFAULT_NOME_CIDADE);
+
+        // Get all the cidadeList where nomeCidade equals to UPDATED_NOME_CIDADE
+        defaultCidadeShouldNotBeFound("nomeCidade.equals=" + UPDATED_NOME_CIDADE);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByNomeCidadeIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where nomeCidade not equals to DEFAULT_NOME_CIDADE
+        defaultCidadeShouldNotBeFound("nomeCidade.notEquals=" + DEFAULT_NOME_CIDADE);
+
+        // Get all the cidadeList where nomeCidade not equals to UPDATED_NOME_CIDADE
+        defaultCidadeShouldBeFound("nomeCidade.notEquals=" + UPDATED_NOME_CIDADE);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByNomeCidadeIsInShouldWork() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where nomeCidade in DEFAULT_NOME_CIDADE or UPDATED_NOME_CIDADE
+        defaultCidadeShouldBeFound("nomeCidade.in=" + DEFAULT_NOME_CIDADE + "," + UPDATED_NOME_CIDADE);
+
+        // Get all the cidadeList where nomeCidade equals to UPDATED_NOME_CIDADE
+        defaultCidadeShouldNotBeFound("nomeCidade.in=" + UPDATED_NOME_CIDADE);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByNomeCidadeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where nomeCidade is not null
+        defaultCidadeShouldBeFound("nomeCidade.specified=true");
+
+        // Get all the cidadeList where nomeCidade is null
+        defaultCidadeShouldNotBeFound("nomeCidade.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByNomeCidadeContainsSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where nomeCidade contains DEFAULT_NOME_CIDADE
+        defaultCidadeShouldBeFound("nomeCidade.contains=" + DEFAULT_NOME_CIDADE);
+
+        // Get all the cidadeList where nomeCidade contains UPDATED_NOME_CIDADE
+        defaultCidadeShouldNotBeFound("nomeCidade.contains=" + UPDATED_NOME_CIDADE);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByNomeCidadeNotContainsSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where nomeCidade does not contain DEFAULT_NOME_CIDADE
+        defaultCidadeShouldNotBeFound("nomeCidade.doesNotContain=" + DEFAULT_NOME_CIDADE);
+
+        // Get all the cidadeList where nomeCidade does not contain UPDATED_NOME_CIDADE
+        defaultCidadeShouldBeFound("nomeCidade.doesNotContain=" + UPDATED_NOME_CIDADE);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByObservacaoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where observacao equals to DEFAULT_OBSERVACAO
+        defaultCidadeShouldBeFound("observacao.equals=" + DEFAULT_OBSERVACAO);
+
+        // Get all the cidadeList where observacao equals to UPDATED_OBSERVACAO
+        defaultCidadeShouldNotBeFound("observacao.equals=" + UPDATED_OBSERVACAO);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByObservacaoIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where observacao not equals to DEFAULT_OBSERVACAO
+        defaultCidadeShouldNotBeFound("observacao.notEquals=" + DEFAULT_OBSERVACAO);
+
+        // Get all the cidadeList where observacao not equals to UPDATED_OBSERVACAO
+        defaultCidadeShouldBeFound("observacao.notEquals=" + UPDATED_OBSERVACAO);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByObservacaoIsInShouldWork() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where observacao in DEFAULT_OBSERVACAO or UPDATED_OBSERVACAO
+        defaultCidadeShouldBeFound("observacao.in=" + DEFAULT_OBSERVACAO + "," + UPDATED_OBSERVACAO);
+
+        // Get all the cidadeList where observacao equals to UPDATED_OBSERVACAO
+        defaultCidadeShouldNotBeFound("observacao.in=" + UPDATED_OBSERVACAO);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByObservacaoIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where observacao is not null
+        defaultCidadeShouldBeFound("observacao.specified=true");
+
+        // Get all the cidadeList where observacao is null
+        defaultCidadeShouldNotBeFound("observacao.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByObservacaoContainsSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where observacao contains DEFAULT_OBSERVACAO
+        defaultCidadeShouldBeFound("observacao.contains=" + DEFAULT_OBSERVACAO);
+
+        // Get all the cidadeList where observacao contains UPDATED_OBSERVACAO
+        defaultCidadeShouldNotBeFound("observacao.contains=" + UPDATED_OBSERVACAO);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByObservacaoNotContainsSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+
+        // Get all the cidadeList where observacao does not contain DEFAULT_OBSERVACAO
+        defaultCidadeShouldNotBeFound("observacao.doesNotContain=" + DEFAULT_OBSERVACAO);
+
+        // Get all the cidadeList where observacao does not contain UPDATED_OBSERVACAO
+        defaultCidadeShouldBeFound("observacao.doesNotContain=" + UPDATED_OBSERVACAO);
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByEstadoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+        Estado estado;
+        if (TestUtil.findAll(em, Estado.class).isEmpty()) {
+            estado = EstadoResourceIT.createEntity(em);
+            em.persist(estado);
+            em.flush();
+        } else {
+            estado = TestUtil.findAll(em, Estado.class).get(0);
+        }
+        em.persist(estado);
+        em.flush();
+        cidade.setEstado(estado);
+        cidadeRepository.saveAndFlush(cidade);
+        Long estadoId = estado.getId();
+
+        // Get all the cidadeList where estado equals to estadoId
+        defaultCidadeShouldBeFound("estadoId.equals=" + estadoId);
+
+        // Get all the cidadeList where estado equals to (estadoId + 1)
+        defaultCidadeShouldNotBeFound("estadoId.equals=" + (estadoId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllCidadesByUserIsEqualToSomething() throws Exception {
+        // Initialize the database
+        cidadeRepository.saveAndFlush(cidade);
+        User user;
+        if (TestUtil.findAll(em, User.class).isEmpty()) {
+            user = UserResourceIT.createEntity(em);
+            em.persist(user);
+            em.flush();
+        } else {
+            user = TestUtil.findAll(em, User.class).get(0);
+        }
+        em.persist(user);
+        em.flush();
+        cidade.setUser(user);
+        cidadeRepository.saveAndFlush(cidade);
+        Long userId = user.getId();
+
+        // Get all the cidadeList where user equals to userId
+        defaultCidadeShouldBeFound("userId.equals=" + userId);
+
+        // Get all the cidadeList where user equals to (userId + 1)
+        defaultCidadeShouldNotBeFound("userId.equals=" + (userId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultCidadeShouldBeFound(String filter) throws Exception {
+        restCidadeMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(cidade.getId().intValue())))
+            .andExpect(jsonPath("$.[*].nomeCidade").value(hasItem(DEFAULT_NOME_CIDADE)))
+            .andExpect(jsonPath("$.[*].observacao").value(hasItem(DEFAULT_OBSERVACAO)));
+
+        // Check, that the count call also returns 1
+        restCidadeMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultCidadeShouldNotBeFound(String filter) throws Exception {
+        restCidadeMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCidadeMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

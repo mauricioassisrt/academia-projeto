@@ -2,6 +2,9 @@ package br.com.academia.web.rest;
 
 import br.com.academia.domain.Cidade;
 import br.com.academia.repository.CidadeRepository;
+import br.com.academia.service.CidadeQueryService;
+import br.com.academia.service.CidadeService;
+import br.com.academia.service.criteria.CidadeCriteria;
 import br.com.academia.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,10 +16,14 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -24,7 +31,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class CidadeResource {
 
     private final Logger log = LoggerFactory.getLogger(CidadeResource.class);
@@ -34,10 +40,16 @@ public class CidadeResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final CidadeService cidadeService;
+
     private final CidadeRepository cidadeRepository;
 
-    public CidadeResource(CidadeRepository cidadeRepository) {
+    private final CidadeQueryService cidadeQueryService;
+
+    public CidadeResource(CidadeService cidadeService, CidadeRepository cidadeRepository, CidadeQueryService cidadeQueryService) {
+        this.cidadeService = cidadeService;
         this.cidadeRepository = cidadeRepository;
+        this.cidadeQueryService = cidadeQueryService;
     }
 
     /**
@@ -53,7 +65,7 @@ public class CidadeResource {
         if (cidade.getId() != null) {
             throw new BadRequestAlertException("A new cidade cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Cidade result = cidadeRepository.save(cidade);
+        Cidade result = cidadeService.save(cidade);
         return ResponseEntity
             .created(new URI("/api/cidades/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -87,7 +99,7 @@ public class CidadeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Cidade result = cidadeRepository.save(cidade);
+        Cidade result = cidadeService.update(cidade);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, cidade.getId().toString()))
@@ -122,19 +134,7 @@ public class CidadeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Cidade> result = cidadeRepository
-            .findById(cidade.getId())
-            .map(existingCidade -> {
-                if (cidade.getNomeCidade() != null) {
-                    existingCidade.setNomeCidade(cidade.getNomeCidade());
-                }
-                if (cidade.getObservacao() != null) {
-                    existingCidade.setObservacao(cidade.getObservacao());
-                }
-
-                return existingCidade;
-            })
-            .map(cidadeRepository::save);
+        Optional<Cidade> result = cidadeService.partialUpdate(cidade);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -145,13 +145,31 @@ public class CidadeResource {
     /**
      * {@code GET  /cidades} : get all the cidades.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of cidades in body.
      */
     @GetMapping("/cidades")
-    public List<Cidade> getAllCidades(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
-        log.debug("REST request to get all Cidades");
-        return cidadeRepository.findByUserIsCurrentUser();
+    public ResponseEntity<List<Cidade>> getAllCidades(
+        CidadeCriteria criteria,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get Cidades by criteria: {}", criteria);
+        Page<Cidade> page = cidadeQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /cidades/count} : count all the cidades.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/cidades/count")
+    public ResponseEntity<Long> countCidades(CidadeCriteria criteria) {
+        log.debug("REST request to count Cidades by criteria: {}", criteria);
+        return ResponseEntity.ok().body(cidadeQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -163,7 +181,7 @@ public class CidadeResource {
     @GetMapping("/cidades/{id}")
     public ResponseEntity<Cidade> getCidade(@PathVariable Long id) {
         log.debug("REST request to get Cidade : {}", id);
-        Optional<Cidade> cidade = cidadeRepository.findOneWithEagerRelationships(id);
+        Optional<Cidade> cidade = cidadeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(cidade);
     }
 
@@ -176,7 +194,7 @@ public class CidadeResource {
     @DeleteMapping("/cidades/{id}")
     public ResponseEntity<Void> deleteCidade(@PathVariable Long id) {
         log.debug("REST request to delete Cidade : {}", id);
-        cidadeRepository.deleteById(id);
+        cidadeService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
