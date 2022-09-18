@@ -1,4 +1,4 @@
-import { HttpParams } from '@angular/common/http';
+import {HttpParams} from '@angular/common/http';
 
 export const createRequestOption = (req?: any): HttpParams => {
   let options: HttpParams = new HttpParams();
@@ -15,6 +15,7 @@ export const createRequestOption = (req?: any): HttpParams => {
         options = options.append('sort', val);
       });
     }
+
   }
 
   return options;

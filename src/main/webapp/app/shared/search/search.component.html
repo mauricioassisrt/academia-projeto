@@ -1,0 +1,12 @@
+<div class="input-group mb-3">
+  <div class="input-group-prepend " style="cursor: pointer" *ngIf="iconButton !== ''" (click)="onClickButton.emit()">
+    <fa-icon icon="search" class="form-control"></fa-icon>
+  </div>
+  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+         title="{{title !== ''? title : ''}}"
+         style="{{styles}}"
+         [(ngModel)]="inputModel"
+         (ngModelChange)="inputModelChange.emit(inputModel)"
+         [placeholder]="placeholder"
+         (keyup.enter)="handleOnEnter()">
+</div>

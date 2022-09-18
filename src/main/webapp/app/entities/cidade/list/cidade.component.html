@@ -2,21 +2,38 @@
   <h2 id="page-heading " data-cy="CidadeHeading">
     <span class="margin-tabela" jhiTranslate="academiaApp.cidade.home.title">Cidades</span>
 
-    <div class="d-flex justify-content-end margin-tabela">
-      <button class="btn btn-info me-2" (click)="loadPage()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="academiaApp.cidade.home.refreshListLabel">Refresh List</span>
-      </button>
+    <div class=" justify-content-end margin-tabela">
+      <div class="row">
+        <div class="col-md-6">
+          <jhi-search
+            [(inputModel)]="searchInput"
+            placeholder="Digite o texto "
+            title="Buscar cliente"
+            (onEnter)="handleSearch()"
+            iconButton="search"
+            (onClickButton)="handleSearch()"
+          >
+          </jhi-search>
+        </div>
+        <div class="col-md-6 ">
+          <button class="btn btn-info me-2" (click)="loadPage()" [disabled]="isLoading">
+            <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+            <span jhiTranslate="academiaApp.cidade.home.refreshListLabel">Refresh List</span>
+          </button>
+          <button
+            id="jh-create-entity"
+            data-cy="entityCreateButton"
+            class="btn btn-primary jh-create-entity create-cidade"
+            [routerLink]="['/cidade/new']"
+          >
+            <fa-icon icon="plus"></fa-icon>
+            <span jhiTranslate="academiaApp.cidade.home.createLabel"> Create a new Cidade </span>
+          </button>
+        </div>
 
-      <button
-        id="jh-create-entity"
-        data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-cidade"
-        [routerLink]="['/cidade/new']"
-      >
-        <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="academiaApp.cidade.home.createLabel"> Create a new Cidade </span>
-      </button>
+      </div>
+
+
     </div>
   </h2>
 
