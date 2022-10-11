@@ -1,11 +1,11 @@
 package br.com.academia.service;
 
-import br.com.academia.domain.*; // for static metamodels
 import br.com.academia.domain.Cidade;
+import br.com.academia.domain.Cidade_;
+import br.com.academia.domain.Estado_;
+import br.com.academia.domain.User_;
 import br.com.academia.repository.CidadeRepository;
 import br.com.academia.service.criteria.CidadeCriteria;
-import java.util.List;
-import javax.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,6 +14,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.QueryService;
+
+import javax.persistence.criteria.JoinType;
+import java.util.List;
 
 /**
  * Service for executing complex queries for {@link Cidade} entities in the database.
@@ -85,7 +88,7 @@ public class CidadeQueryService extends QueryService<Cidade> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getId(), Cidade_.id));
             }
-            if (criteria.getNomeCidade() != null) {
+            if (criteria.getNomeCidade() != null && !criteria.getNomeCidade().getContains().equals("")) {
                 specification = specification.and(buildStringSpecification(criteria.getNomeCidade(), Cidade_.nomeCidade));
             }
             if (criteria.getObservacao() != null) {

@@ -7,7 +7,7 @@ const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const WebpackNotifierPlugin = require('webpack-notifier');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
+//const ESLintPlugin = require('eslint-webpack-plugin');
 
 const environment = require('./environment');
 const proxyConfig = require('./proxy.conf');
@@ -22,12 +22,12 @@ module.exports = async (config, options, targetOptions) => {
   // PLUGINS
   if (config.mode === 'development') {
     config.plugins.push(
-      new ESLintPlugin({
-        extensions: ['js', 'ts'],
-      }),
+      // new ESLintPlugin({
+      //   extensions: ['js', 'ts'],
+      // }),
       new WebpackNotifierPlugin({
-        title: 'Academia',
-        contentImage: path.join(__dirname, 'logo-jhipster.png'),
+        title: 'Marcelo de Assis',
+        contentImage: path.join(__dirname, 'logo.jpg'),
       })
     );
   }

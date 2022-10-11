@@ -1,27 +1,28 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpResponse} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
-import { isPresent } from 'app/core/util/operators';
-import { ApplicationConfigService } from 'app/core/config/application-config.service';
-import { createRequestOption } from 'app/core/request/request-util';
-import { ICidade, getCidadeIdentifier } from '../cidade.model';
+import {isPresent} from 'app/core/util/operators';
+import {ApplicationConfigService} from 'app/core/config/application-config.service';
+import {createRequestOption} from 'app/core/request/request-util';
+import {getCidadeIdentifier, ICidade} from '../cidade.model';
 
 export type EntityResponseType = HttpResponse<ICidade>;
 export type EntityArrayResponseType = HttpResponse<ICidade[]>;
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class CidadeService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/cidades');
 
-  constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
+  constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {
+  }
 
   create(cidade: ICidade): Observable<EntityResponseType> {
-    return this.http.post<ICidade>(this.resourceUrl, cidade, { observe: 'response' });
+    return this.http.post<ICidade>(this.resourceUrl, cidade, {observe: 'response'});
   }
 
   update(cidade: ICidade): Observable<EntityResponseType> {
-    return this.http.put<ICidade>(`${this.resourceUrl}/${getCidadeIdentifier(cidade) as number}`, cidade, { observe: 'response' });
+    return this.http.put<ICidade>(`${this.resourceUrl}/${getCidadeIdentifier(cidade) as number}`, cidade, {observe: 'response'});
   }
 
   partialUpdate(cidade: ICidade): Observable<EntityResponseType> {
@@ -56,5 +57,13 @@ export class CidadeService {
       return [...cidadesToAdd, ...cidadeCollection];
     }
     return cidadeCollection;
+  }
+
+  querySearchInput(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<ICidade[]>(this.resourceUrl + `/searchInput${req.searchInput}`, {
+      params: options,
+      observe: 'response'
+    });
   }
 }
