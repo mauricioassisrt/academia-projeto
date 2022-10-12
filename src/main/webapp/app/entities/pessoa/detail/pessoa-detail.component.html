@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-center fundo-branco">
+  <div class="col-8">
+    <div *ngIf="pessoa">
+      <h2 data-cy="pessoaDetailsHeading"><span jhiTranslate="academiaApp.pessoa.detail.title">Pessoa</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ pessoa.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.cpf">Cpf</span></dt>
+        <dd>
+          <span>{{ pessoa.cpf }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.dataNascimento">Data Nascimento</span></dt>
+        <dd>
+          <span>{{ pessoa.dataNascimento | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.telefone">Telefone</span></dt>
+        <dd>
+          <span>{{ pessoa.telefone }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.rua">Rua</span></dt>
+        <dd>
+          <span>{{ pessoa.rua }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.numero">Numero</span></dt>
+        <dd>
+          <span>{{ pessoa.numero }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.bairro">Bairro</span></dt>
+        <dd>
+          <span>{{ pessoa.bairro }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.cep">Cep</span></dt>
+        <dd>
+          <span>{{ pessoa.cep }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.user">User</span></dt>
+        <dd>
+          <span>{{ pessoa.user?.login }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.cidade">Cidade</span></dt>
+        <dd>
+          <div *ngIf="pessoa.cidade">
+            <a [routerLink]="['/cidade', pessoa.cidade?.id, 'view']">{{ pessoa.cidade?.nomeCidade }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/pessoa', pessoa.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,175 @@
+<div class="d-flex justify-content-center fundo-branco">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-pessoa-heading" data-cy="PessoaCreateUpdateHeading" jhiTranslate="academiaApp.pessoa.home.createOrEditLabel">
+        Create or edit a Pessoa
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.cpf" for="field_cpf">Cpf</label>
+          <input type="text" class="form-control" name="cpf" id="field_cpf" data-cy="cpf" formControlName="cpf" />
+          <div *ngIf="editForm.get('cpf')!.invalid && (editForm.get('cpf')!.dirty || editForm.get('cpf')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('cpf')?.errors?.required" jhiTranslate="entity.validation.required">
+              This field is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.dataNascimento" for="field_dataNascimento">Data Nascimento</label>
+          <div class="input-group">
+            <input
+              id="field_dataNascimento"
+              data-cy="dataNascimento"
+              type="text"
+              class="form-control"
+              name="dataNascimento"
+              ngbDatepicker
+              #dataNascimentoDp="ngbDatepicker"
+              formControlName="dataNascimento"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dataNascimentoDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+          <div
+            *ngIf="
+              editForm.get('dataNascimento')!.invalid && (editForm.get('dataNascimento')!.dirty || editForm.get('dataNascimento')!.touched)
+            "
+          >
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('dataNascimento')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.telefone" for="field_telefone">Telefone</label>
+          <input type="text" class="form-control" name="telefone" id="field_telefone" data-cy="telefone" formControlName="telefone" />
+          <div *ngIf="editForm.get('telefone')!.invalid && (editForm.get('telefone')!.dirty || editForm.get('telefone')!.touched)">
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('telefone')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.rua" for="field_rua">Rua</label>
+          <input type="text" class="form-control" name="rua" id="field_rua" data-cy="rua" formControlName="rua" />
+          <div *ngIf="editForm.get('rua')!.invalid && (editForm.get('rua')!.dirty || editForm.get('rua')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('rua')?.errors?.required" jhiTranslate="entity.validation.required">
+              This field is required.
+            </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('rua')?.errors?.minlength"
+              jhiTranslate="entity.validation.minlength"
+              [translateValues]="{ min: 5 }"
+            >
+              This field is required to be at least 5 characters.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.numero" for="field_numero">Numero</label>
+          <input type="text" class="form-control" name="numero" id="field_numero" data-cy="numero" formControlName="numero" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.bairro" for="field_bairro">Bairro</label>
+          <input type="text" class="form-control" name="bairro" id="field_bairro" data-cy="bairro" formControlName="bairro" />
+          <div *ngIf="editForm.get('bairro')!.invalid && (editForm.get('bairro')!.dirty || editForm.get('bairro')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('bairro')?.errors?.required" jhiTranslate="entity.validation.required">
+              This field is required.
+            </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('bairro')?.errors?.minlength"
+              jhiTranslate="entity.validation.minlength"
+              [translateValues]="{ min: 5 }"
+            >
+              This field is required to be at least 5 characters.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.cep" for="field_cep">Cep</label>
+          <input type="text" class="form-control" name="cep" id="field_cep" data-cy="cep" formControlName="cep" />
+          <div *ngIf="editForm.get('cep')!.invalid && (editForm.get('cep')!.dirty || editForm.get('cep')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('cep')?.errors?.required" jhiTranslate="entity.validation.required">
+              This field is required.
+            </small>
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('cep')?.errors?.minlength"
+              jhiTranslate="entity.validation.minlength"
+              [translateValues]="{ min: 10 }"
+            >
+              This field is required to be at least 10 characters.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.user" for="field_user">User</label>
+          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="userOption.id === editForm.get('user')!.value?.id ? editForm.get('user')!.value : userOption"
+              *ngFor="let userOption of usersSharedCollection; trackBy: trackUserById"
+            >
+              {{ userOption.login }}
+            </option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="academiaApp.pessoa.cidade" for="field_cidade">Cidade</label>
+          <select class="form-control" id="field_cidade" data-cy="cidade" name="cidade" formControlName="cidade">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="cidadeOption.id === editForm.get('cidade')!.value?.id ? editForm.get('cidade')!.value : cidadeOption"
+              *ngFor="let cidadeOption of cidadesSharedCollection; trackBy: trackCidadeById"
+            >
+              {{ cidadeOption.nomeCidade }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
