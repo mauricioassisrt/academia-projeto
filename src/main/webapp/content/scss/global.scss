@@ -231,3 +231,24 @@ a {
   width: 100%;
   height: 50%;
 }
+.paginacao{
+  width: 100%;
+  height: 6%;
+  bottom: 5%;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  color: #3768bd !important;
+  background-color: white;
+  /* width: 100%; */
+  height: 14%;
+  padding-top: 2%;
+}
+.page-link{
+  color: #3768bd!important;
+}
+
+body{
+  background-image: url(~content/images/backgroud-login.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}

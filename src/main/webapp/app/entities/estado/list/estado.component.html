@@ -1,8 +1,8 @@
-<div>
+<div class="fundo-branco" >
   <h2 id="page-heading" data-cy="EstadoHeading">
-    <span jhiTranslate="academiaApp.estado.home.title">Estados</span>
+    <span jhiTranslate="academiaApp.estado.home.title" class="margin-tabela">Estados</span>
 
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end margin-tabela">
       <button class="btn btn-info me-2" (click)="loadPage()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span jhiTranslate="academiaApp.estado.home.refreshListLabel">Refresh List</span>
@@ -28,8 +28,8 @@
     <span jhiTranslate="academiaApp.estado.home.notFound">No estados found</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="estados && estados.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
+  <div class="table-responsive margin-tabela" id="entities" *ngIf="estados && estados.length > 0">
+    <table class="table table-striped " aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
           <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
@@ -70,7 +70,7 @@
     </table>
   </div>
 
-  <div *ngIf="estados && estados.length > 0">
+  <div *ngIf="estados && estados.length > 0"  class="paginacao" >
     <div class="d-flex justify-content-center">
       <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
     </div>

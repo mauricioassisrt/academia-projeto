@@ -63,7 +63,7 @@ spring:
     change-log: classpath:db.changelog/dbchangelog.xml
     enabled: true
     # Remove 'faker' if you do not want the sample data to be loaded automatically
-    contexts: dev
+    contexts: dev, faker
 
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
