@@ -1,6 +1,6 @@
 <jhi-page-ribbon></jhi-page-ribbon>
 
-<div *jhiHasAnyAuthority="'ROLE_ADMIN'">
+<div *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_USER', 'ROLE_CLIENTE']">
   <router-outlet name="navbar"></router-outlet>
 </div>
 

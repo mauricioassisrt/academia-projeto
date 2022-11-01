@@ -8,11 +8,11 @@
         <span jhiTranslate="academiaApp.pessoa.home.refreshListLabel">Refresh List</span>
       </button>
 
-      <button
-        id="jh-create-entity"
-        data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-pessoa"
-        [routerLink]="['/pessoa/new']"
+      <button *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_USER']"
+              id="jh-create-entity"
+              data-cy="entityCreateButton"
+              class="btn btn-primary jh-create-entity create-pessoa"
+              [routerLink]="['/pessoa/new']"
       >
         <fa-icon icon="plus"></fa-icon>
         <span jhiTranslate="academiaApp.pessoa.home.createLabel"> Create a new Pessoa </span>
@@ -75,7 +75,8 @@
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
               </button>
 
-              <button type="submit" (click)="delete(pessoa)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button type="submit" (click)="delete(pessoa)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton"
+                      *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_USER']">
                 <fa-icon icon="times"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
               </button>
