@@ -1,39 +1,22 @@
-<div class="fundo-branco ">
-  <h2 id="page-heading " data-cy="CidadeHeading">
-    <span class="margin-tabela" jhiTranslate="academiaApp.cidade.home.title">Cidades</span>
+<div>
+  <h2 id="page-heading" data-cy="CidadeHeading">
+    <span jhiTranslate="academiaApp.cidade.home.title">Cidades</span>
 
-    <div class=" justify-content-end margin-tabela">
-      <div class="row">
-        <div class="col-md-6">
-          <jhi-search
-            [(inputModel)]="searchInput"
-            placeholder="Digite o texto "
-            title="Buscar cliente"
-            (onEnter)="handleSearch()"
-            iconButton="search"
-            (onClickButton)="handleSearch()"
-          >
-          </jhi-search>
-        </div>
-        <div class="col-md-6 ">
-          <button class="btn btn-info me-2" (click)="loadPage()" [disabled]="isLoading">
-            <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-            <span jhiTranslate="academiaApp.cidade.home.refreshListLabel">Refresh List</span>
-          </button>
-          <button
-            id="jh-create-entity"
-            data-cy="entityCreateButton"
-            class="btn btn-primary jh-create-entity create-cidade"
-            [routerLink]="['/cidade/new']"
-          >
-            <fa-icon icon="plus"></fa-icon>
-            <span jhiTranslate="academiaApp.cidade.home.createLabel"> Create a new Cidade </span>
-          </button>
-        </div>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="loadPage()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="academiaApp.cidade.home.refreshListLabel">Refresh List</span>
+      </button>
 
-      </div>
-
-
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-cidade"
+        [routerLink]="['/cidade/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="academiaApp.cidade.home.createLabel"> Create a new Cidade </span>
+      </button>
     </div>
   </h2>
 
@@ -45,8 +28,8 @@
     <span jhiTranslate="academiaApp.cidade.home.notFound">No cidades found</span>
   </div>
 
-  <div class="table-responsive margin-tabela" id="entities" *ngIf="cidades && cidades.length > 0">
-    <table class="table table-striped " aria-describedby="page-heading">
+  <div class="table-responsive" id="entities" *ngIf="cidades && cidades.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
           <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
@@ -103,13 +86,13 @@
     </table>
   </div>
 
-  <div *ngIf="cidades && cidades.length > 0" class="paginacao">
+  <div *ngIf="cidades && cidades.length > 0">
     <div class="d-flex justify-content-center">
       <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
     </div>
 
     <div class="d-flex justify-content-center">
-      <ngb-pagination class="fundo-paginacao-click"
+      <ngb-pagination
         [collectionSize]="totalItems"
         [(page)]="ngbPaginationPage"
         [pageSize]="itemsPerPage"

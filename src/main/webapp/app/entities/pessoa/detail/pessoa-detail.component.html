@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center fundo-branco">
+<div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="pessoa">
       <h2 data-cy="pessoaDetailsHeading"><span jhiTranslate="academiaApp.pessoa.detail.title">Pessoa</span></h2>
@@ -41,16 +41,6 @@
         <dt><span jhiTranslate="academiaApp.pessoa.cep">Cep</span></dt>
         <dd>
           <span>{{ pessoa.cep }}</span>
-        </dd>
-        <dt><span jhiTranslate="academiaApp.pessoa.user">User</span></dt>
-        <dd>
-          <span>{{ pessoa.user?.login }}</span>
-        </dd>
-        <dt><span jhiTranslate="academiaApp.pessoa.cidade">Cidade</span></dt>
-        <dd>
-          <div *ngIf="pessoa.cidade">
-            <a [routerLink]="['/cidade', pessoa.cidade?.id, 'view']">{{ pessoa.cidade?.nomeCidade }}</a>
-          </div>
         </dd>
       </dl>
 

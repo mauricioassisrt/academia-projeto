@@ -1,6 +1,4 @@
 import dayjs from 'dayjs/esm';
-import { IUser } from 'app/entities/user/user.model';
-import { ICidade } from 'app/entities/cidade/cidade.model';
 
 export interface IPessoa {
   id?: number;
@@ -11,8 +9,6 @@ export interface IPessoa {
   numero?: string | null;
   bairro?: string;
   cep?: string;
-  user?: IUser | null;
-  cidade?: ICidade | null;
 }
 
 export class Pessoa implements IPessoa {
@@ -24,9 +20,7 @@ export class Pessoa implements IPessoa {
     public rua?: string,
     public numero?: string | null,
     public bairro?: string,
-    public cep?: string,
-    public user?: IUser | null,
-    public cidade?: ICidade | null
+    public cep?: string
   ) {}
 }
 

@@ -44,25 +44,10 @@
     }
   ],
   "fluentMethods": true,
-  "jpaMetamodelFiltering": false,
+  "jpaMetamodelFiltering": true,
   "name": "Pessoa",
-  "pagination": "no",
+  "pagination": "pagination",
   "readOnly": false,
-  "relationships": [
-    {
-      "otherEntityField": "login",
-      "otherEntityName": "user",
-      "otherEntityRelationshipName": "pessoa",
-      "relationshipName": "user",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "otherEntityField": "nomeCidade",
-      "otherEntityName": "cidade",
-      "otherEntityRelationshipName": "pessoa",
-      "relationshipName": "cidade",
-      "relationshipType": "many-to-one"
-    }
-  ],
-  "service": "no"
+  "relationships": [],
+  "service": "serviceImpl"
 }

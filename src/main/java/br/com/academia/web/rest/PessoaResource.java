@@ -1,30 +1,40 @@
 package br.com.academia.web.rest;
 
 import br.com.academia.domain.Pessoa;
+import br.com.academia.domain.User;
 import br.com.academia.repository.PessoaRepository;
+import br.com.academia.repository.UserRepository;
+import br.com.academia.security.SecurityUtils;
+import br.com.academia.service.PessoaQueryService;
+import br.com.academia.service.PessoaService;
+import br.com.academia.service.criteria.PessoaCriteria;
 import br.com.academia.web.rest.errors.BadRequestAlertException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link br.com.academia.domain.Pessoa}.
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class PessoaResource {
 
     private final Logger log = LoggerFactory.getLogger(PessoaResource.class);
@@ -34,10 +44,18 @@ public class PessoaResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final PessoaRepository pessoaRepository;
+    private final PessoaService pessoaService;
 
-    public PessoaResource(PessoaRepository pessoaRepository) {
+    private final PessoaRepository pessoaRepository;
+    private final UserRepository userRepository;
+
+    private final PessoaQueryService pessoaQueryService;
+
+    public PessoaResource(PessoaService pessoaService, PessoaRepository pessoaRepository, PessoaQueryService pessoaQueryService, UserRepository userRepository) {
+        this.pessoaService = pessoaService;
         this.pessoaRepository = pessoaRepository;
+        this.pessoaQueryService = pessoaQueryService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -53,7 +71,7 @@ public class PessoaResource {
         if (pessoa.getId() != null) {
             throw new BadRequestAlertException("A new pessoa cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Pessoa result = pessoaRepository.save(pessoa);
+        Pessoa result = pessoaService.save(pessoa);
         return ResponseEntity
             .created(new URI("/api/pessoas/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -87,7 +105,7 @@ public class PessoaResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Pessoa result = pessoaRepository.save(pessoa);
+        Pessoa result = pessoaService.update(pessoa);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pessoa.getId().toString()))
@@ -122,34 +140,7 @@ public class PessoaResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Pessoa> result = pessoaRepository
-            .findById(pessoa.getId())
-            .map(existingPessoa -> {
-                if (pessoa.getCpf() != null) {
-                    existingPessoa.setCpf(pessoa.getCpf());
-                }
-                if (pessoa.getDataNascimento() != null) {
-                    existingPessoa.setDataNascimento(pessoa.getDataNascimento());
-                }
-                if (pessoa.getTelefone() != null) {
-                    existingPessoa.setTelefone(pessoa.getTelefone());
-                }
-                if (pessoa.getRua() != null) {
-                    existingPessoa.setRua(pessoa.getRua());
-                }
-                if (pessoa.getNumero() != null) {
-                    existingPessoa.setNumero(pessoa.getNumero());
-                }
-                if (pessoa.getBairro() != null) {
-                    existingPessoa.setBairro(pessoa.getBairro());
-                }
-                if (pessoa.getCep() != null) {
-                    existingPessoa.setCep(pessoa.getCep());
-                }
-
-                return existingPessoa;
-            })
-            .map(pessoaRepository::save);
+        Optional<Pessoa> result = pessoaService.partialUpdate(pessoa);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -160,13 +151,40 @@ public class PessoaResource {
     /**
      * {@code GET  /pessoas} : get all the pessoas.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of pessoas in body.
      */
     @GetMapping("/pessoas")
-    public List<Pessoa> getAllPessoas(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
-        log.debug("REST request to get all Pessoas");
-        return pessoaRepository.findAllWithEagerRelationships();
+    public ResponseEntity<List<Pessoa>> getAllPessoas(
+        PessoaCriteria criteria,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        Optional<User> usuario = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin().get());
+        if (pessoaService.verificaPermissao()) {
+            log.debug("REST request to get pessoa AUTENTICADO ", criteria);
+            Page<Pessoa> page = pessoaRepository.findByUser(usuario.get(), pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
+        } else {
+            log.debug("REST request to get Pessoas by criteria: {}", criteria);
+            Page<Pessoa> page = pessoaQueryService.findByCriteria(criteria, pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
+        }
+
+    }
+
+    /**
+     * {@code GET  /pessoas/count} : count all the pessoas.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/pessoas/count")
+    public ResponseEntity<Long> countPessoas(PessoaCriteria criteria) {
+        log.debug("REST request to count Pessoas by criteria: {}", criteria);
+        return ResponseEntity.ok().body(pessoaQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -178,7 +196,7 @@ public class PessoaResource {
     @GetMapping("/pessoas/{id}")
     public ResponseEntity<Pessoa> getPessoa(@PathVariable Long id) {
         log.debug("REST request to get Pessoa : {}", id);
-        Optional<Pessoa> pessoa = pessoaRepository.findOneWithEagerRelationships(id);
+        Optional<Pessoa> pessoa = pessoaService.findOne(id);
         return ResponseUtil.wrapOrNotFound(pessoa);
     }
 
@@ -191,7 +209,7 @@ public class PessoaResource {
     @DeleteMapping("/pessoas/{id}")
     public ResponseEntity<Void> deletePessoa(@PathVariable Long id) {
         log.debug("REST request to delete Pessoa : {}", id);
-        pessoaRepository.deleteById(id);
+        pessoaService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

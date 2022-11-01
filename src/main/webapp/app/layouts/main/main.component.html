@@ -1,10 +1,10 @@
 <jhi-page-ribbon></jhi-page-ribbon>
 
-<div *jhiHasAnyAuthority="'ROLE_USER'">
+<div *jhiHasAnyAuthority="'ROLE_ADMIN'">
   <router-outlet name="navbar"></router-outlet>
 </div>
 
-<div class="container-fluid fundo-imagem" >
+<div class="container-fluid" >
   <div class="">
     <router-outlet></router-outlet>
   </div>

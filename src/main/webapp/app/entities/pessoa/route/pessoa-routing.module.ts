@@ -11,6 +11,9 @@ const pessoaRoute: Routes = [
   {
     path: '',
     component: PessoaComponent,
+    data: {
+      defaultSort: 'id,asc',
+    },
     canActivate: [UserRouteAccessService],
   },
   {

@@ -24,9 +24,7 @@
       "rua": "Rua",
       "numero": "Numero",
       "bairro": "Bairro",
-      "cep": "Cep",
-      "user": "User",
-      "cidade": "Cidade"
+      "cep": "Cep"
     }
   }
 }

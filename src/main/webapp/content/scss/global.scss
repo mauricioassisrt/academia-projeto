@@ -247,8 +247,13 @@ a {
   color: #3768bd!important;
 }
 
-body{
+.fundo-image {
   background-image: url(~content/images/backgroud-login.jpg);
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.margin-card-login {
+  margin-bottom: 18%;
+  margin-top: 14%;
 }
