@@ -1,10 +1,11 @@
 package br.com.academia.service;
 
+import br.com.academia.domain.*; // for static metamodels
 import br.com.academia.domain.Pessoa;
-import br.com.academia.domain.Pessoa_;
 import br.com.academia.repository.PessoaRepository;
-import br.com.academia.security.SecurityUtils;
 import br.com.academia.service.criteria.PessoaCriteria;
+import java.util.List;
+import javax.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,8 +14,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.QueryService;
-
-import java.util.List;
 
 /**
  * Service for executing complex queries for {@link Pessoa} entities in the database.
@@ -36,7 +35,6 @@ public class PessoaQueryService extends QueryService<Pessoa> {
 
     /**
      * Return a {@link List} of {@link Pessoa} which matches the criteria from the database.
-     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
@@ -49,9 +47,8 @@ public class PessoaQueryService extends QueryService<Pessoa> {
 
     /**
      * Return a {@link Page} of {@link Pessoa} which matches the criteria from the database.
-     *
      * @param criteria The object which holds all the filters, which the entities should match.
-     * @param page     The page, which should be returned.
+     * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
@@ -63,7 +60,6 @@ public class PessoaQueryService extends QueryService<Pessoa> {
 
     /**
      * Return the number of matching entities in the database.
-     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the number of matching entities.
      */
@@ -76,7 +72,6 @@ public class PessoaQueryService extends QueryService<Pessoa> {
 
     /**
      * Function to convert {@link PessoaCriteria} to a {@link Specification}
-     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching {@link Specification} of the entity.
      */
@@ -110,6 +105,18 @@ public class PessoaQueryService extends QueryService<Pessoa> {
             }
             if (criteria.getCep() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getCep(), Pessoa_.cep));
+            }
+            if (criteria.getUserId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getUserId(), root -> root.join(Pessoa_.user, JoinType.LEFT).get(User_.id))
+                    );
+            }
+            if (criteria.getCidadeId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getCidadeId(), root -> root.join(Pessoa_.cidade, JoinType.LEFT).get(Cidade_.id))
+                    );
             }
         }
         return specification;

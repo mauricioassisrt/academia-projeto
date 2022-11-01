@@ -48,6 +48,12 @@
             <span jhiTranslate="academiaApp.pessoa.bairro">Bairro</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col" jhiSortBy="cep"><span jhiTranslate="academiaApp.pessoa.cep">Cep</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="user.login">
+            <span jhiTranslate="academiaApp.pessoa.user">User</span> <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th scope="col" jhiSortBy="cidade.nomeCidade">
+            <span jhiTranslate="academiaApp.pessoa.cidade">Cidade</span> <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -63,6 +69,14 @@
           <td>{{ pessoa.numero }}</td>
           <td>{{ pessoa.bairro }}</td>
           <td>{{ pessoa.cep }}</td>
+          <td>
+            {{ pessoa.user?.login }}
+          </td>
+          <td>
+            <div *ngIf="pessoa.cidade">
+              <a [routerLink]="['/cidade', pessoa.cidade?.id, 'view']">{{ pessoa.cidade?.nomeCidade }}</a>
+            </div>
+          </td>
           <td class="text-end">
             <div class="btn-group">
               <button type="submit" [routerLink]="['/pessoa', pessoa.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

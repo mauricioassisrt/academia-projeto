@@ -42,6 +42,16 @@
         <dd>
           <span>{{ pessoa.cep }}</span>
         </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.user">User</span></dt>
+        <dd>
+          <span>{{ pessoa.user?.login }}</span>
+        </dd>
+        <dt><span jhiTranslate="academiaApp.pessoa.cidade">Cidade</span></dt>
+        <dd>
+          <div *ngIf="pessoa.cidade">
+            <a [routerLink]="['/cidade', pessoa.cidade?.id, 'view']">{{ pessoa.cidade?.nomeCidade }}</a>
+          </div>
+        </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

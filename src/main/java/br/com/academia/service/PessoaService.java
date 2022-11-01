@@ -1,10 +1,9 @@
 package br.com.academia.service;
 
 import br.com.academia.domain.Pessoa;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
 
 /**
  * Service Interface for managing {@link Pessoa}.
@@ -41,6 +40,14 @@ public interface PessoaService {
      * @return the list of entities.
      */
     Page<Pessoa> findAll(Pageable pageable);
+
+    /**
+     * Get all the pessoas with eager load of many-to-many relationships.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<Pessoa> findAllWithEagerRelationships(Pageable pageable);
 
     /**
      * Get the "id" pessoa.

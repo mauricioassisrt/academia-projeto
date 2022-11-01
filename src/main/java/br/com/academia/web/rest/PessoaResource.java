@@ -47,9 +47,9 @@ public class PessoaResource {
     private final PessoaService pessoaService;
 
     private final PessoaRepository pessoaRepository;
-    private final UserRepository userRepository;
 
     private final PessoaQueryService pessoaQueryService;
+    private final UserRepository userRepository;
 
     public PessoaResource(PessoaService pessoaService, PessoaRepository pessoaRepository, PessoaQueryService pessoaQueryService, UserRepository userRepository) {
         this.pessoaService = pessoaService;

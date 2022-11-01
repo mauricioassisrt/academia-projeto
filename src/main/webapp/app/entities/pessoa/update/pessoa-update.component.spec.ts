@@ -9,6 +9,11 @@ import { of, Subject, from } from 'rxjs';
 import { PessoaService } from '../service/pessoa.service';
 import { IPessoa, Pessoa } from '../pessoa.model';
 
+import { IUser } from 'app/entities/user/user.model';
+import { UserService } from 'app/entities/user/user.service';
+import { ICidade } from 'app/entities/cidade/cidade.model';
+import { CidadeService } from 'app/entities/cidade/service/cidade.service';
+
 import { PessoaUpdateComponent } from './pessoa-update.component';
 
 describe('Pessoa Management Update Component', () => {
@@ -16,6 +21,8 @@ describe('Pessoa Management Update Component', () => {
   let fixture: ComponentFixture<PessoaUpdateComponent>;
   let activatedRoute: ActivatedRoute;
   let pessoaService: PessoaService;
+  let userService: UserService;
+  let cidadeService: CidadeService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -37,18 +44,64 @@ describe('Pessoa Management Update Component', () => {
     fixture = TestBed.createComponent(PessoaUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
     pessoaService = TestBed.inject(PessoaService);
+    userService = TestBed.inject(UserService);
+    cidadeService = TestBed.inject(CidadeService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
+    it('Should call User query and add missing value', () => {
+      const pessoa: IPessoa = { id: 456 };
+      const user: IUser = { id: 66287 };
+      pessoa.user = user;
+
+      const userCollection: IUser[] = [{ id: 672 }];
+      jest.spyOn(userService, 'query').mockReturnValue(of(new HttpResponse({ body: userCollection })));
+      const additionalUsers = [user];
+      const expectedCollection: IUser[] = [...additionalUsers, ...userCollection];
+      jest.spyOn(userService, 'addUserToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ pessoa });
+      comp.ngOnInit();
+
+      expect(userService.query).toHaveBeenCalled();
+      expect(userService.addUserToCollectionIfMissing).toHaveBeenCalledWith(userCollection, ...additionalUsers);
+      expect(comp.usersSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should call Cidade query and add missing value', () => {
+      const pessoa: IPessoa = { id: 456 };
+      const cidade: ICidade = { id: 64862 };
+      pessoa.cidade = cidade;
+
+      const cidadeCollection: ICidade[] = [{ id: 78255 }];
+      jest.spyOn(cidadeService, 'query').mockReturnValue(of(new HttpResponse({ body: cidadeCollection })));
+      const additionalCidades = [cidade];
+      const expectedCollection: ICidade[] = [...additionalCidades, ...cidadeCollection];
+      jest.spyOn(cidadeService, 'addCidadeToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ pessoa });
+      comp.ngOnInit();
+
+      expect(cidadeService.query).toHaveBeenCalled();
+      expect(cidadeService.addCidadeToCollectionIfMissing).toHaveBeenCalledWith(cidadeCollection, ...additionalCidades);
+      expect(comp.cidadesSharedCollection).toEqual(expectedCollection);
+    });
+
     it('Should update editForm', () => {
       const pessoa: IPessoa = { id: 456 };
+      const user: IUser = { id: 54490 };
+      pessoa.user = user;
+      const cidade: ICidade = { id: 24043 };
+      pessoa.cidade = cidade;
 
       activatedRoute.data = of({ pessoa });
       comp.ngOnInit();
 
       expect(comp.editForm.value).toEqual(expect.objectContaining(pessoa));
+      expect(comp.usersSharedCollection).toContain(user);
+      expect(comp.cidadesSharedCollection).toContain(cidade);
     });
   });
 
@@ -113,6 +166,24 @@ describe('Pessoa Management Update Component', () => {
       expect(pessoaService.update).toHaveBeenCalledWith(pessoa);
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Tracking relationships identifiers', () => {
+    describe('trackUserById', () => {
+      it('Should return tracked User primary key', () => {
+        const entity = { id: 123 };
+        const trackResult = comp.trackUserById(0, entity);
+        expect(trackResult).toEqual(entity.id);
+      });
+    });
+
+    describe('trackCidadeById', () => {
+      it('Should return tracked Cidade primary key', () => {
+        const entity = { id: 123 };
+        const trackResult = comp.trackCidadeById(0, entity);
+        expect(trackResult).toEqual(entity.id);
+      });
     });
   });
 });

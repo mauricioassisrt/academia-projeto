@@ -1,13 +1,12 @@
 package br.com.academia.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.LocalDate;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A Pessoa.
@@ -53,8 +52,14 @@ public class Pessoa implements Serializable {
     @Size(min = 10)
     @Column(name = "cep", nullable = false)
     private String cep;
+
     @ManyToOne
     private User user;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "estado", "user" }, allowSetters = true)
+    private Cidade cidade;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -161,6 +166,32 @@ public class Pessoa implements Serializable {
         this.cep = cep;
     }
 
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Pessoa user(User user) {
+        this.setUser(user);
+        return this;
+    }
+
+    public Cidade getCidade() {
+        return this.cidade;
+    }
+
+    public void setCidade(Cidade cidade) {
+        this.cidade = cidade;
+    }
+
+    public Pessoa cidade(Cidade cidade) {
+        this.setCidade(cidade);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -193,18 +224,5 @@ public class Pessoa implements Serializable {
             ", bairro='" + getBairro() + "'" +
             ", cep='" + getCep() + "'" +
             "}";
-    }
-
-    public User getUser() {
-        return this.user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Pessoa user(User user) {
-        this.setUser(user);
-        return this;
     }
 }

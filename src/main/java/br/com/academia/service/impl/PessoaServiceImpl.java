@@ -2,6 +2,7 @@ package br.com.academia.service.impl;
 
 import br.com.academia.domain.Pessoa;
 import br.com.academia.repository.PessoaRepository;
+import br.com.academia.security.AuthoritiesConstants;
 import br.com.academia.service.PessoaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,11 +84,15 @@ public class PessoaServiceImpl implements PessoaService {
         return pessoaRepository.findAll(pageable);
     }
 
+    public Page<Pessoa> findAllWithEagerRelationships(Pageable pageable) {
+        return pessoaRepository.findAllWithEagerRelationships(pageable);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Optional<Pessoa> findOne(Long id) {
         log.debug("Request to get Pessoa : {}", id);
-        return pessoaRepository.findById(id);
+        return pessoaRepository.findOneWithEagerRelationships(id);
     }
 
     @Override
@@ -95,16 +100,14 @@ public class PessoaServiceImpl implements PessoaService {
         log.debug("Request to delete Pessoa : {}", id);
         pessoaRepository.deleteById(id);
     }
-
     @Override
     public boolean verificaPermissao() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         for (GrantedAuthority item : auth.getAuthorities()) {
-            if (item.getAuthority().equals("ROLE_CLIENTE")) {
+            if (item.getAuthority().equals(AuthoritiesConstants.CLIENTE)) {
                 return true;
             }
         }
         return false;
     }
-
 }

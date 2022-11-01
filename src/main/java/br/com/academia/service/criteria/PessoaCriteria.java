@@ -43,6 +43,10 @@ public class PessoaCriteria implements Serializable, Criteria {
 
     private StringFilter cep;
 
+    private LongFilter userId;
+
+    private LongFilter cidadeId;
+
     private Boolean distinct;
 
     public PessoaCriteria() {}
@@ -56,6 +60,8 @@ public class PessoaCriteria implements Serializable, Criteria {
         this.numero = other.numero == null ? null : other.numero.copy();
         this.bairro = other.bairro == null ? null : other.bairro.copy();
         this.cep = other.cep == null ? null : other.cep.copy();
+        this.userId = other.userId == null ? null : other.userId.copy();
+        this.cidadeId = other.cidadeId == null ? null : other.cidadeId.copy();
         this.distinct = other.distinct;
     }
 
@@ -184,6 +190,36 @@ public class PessoaCriteria implements Serializable, Criteria {
         this.cep = cep;
     }
 
+    public LongFilter getUserId() {
+        return userId;
+    }
+
+    public LongFilter userId() {
+        if (userId == null) {
+            userId = new LongFilter();
+        }
+        return userId;
+    }
+
+    public void setUserId(LongFilter userId) {
+        this.userId = userId;
+    }
+
+    public LongFilter getCidadeId() {
+        return cidadeId;
+    }
+
+    public LongFilter cidadeId() {
+        if (cidadeId == null) {
+            cidadeId = new LongFilter();
+        }
+        return cidadeId;
+    }
+
+    public void setCidadeId(LongFilter cidadeId) {
+        this.cidadeId = cidadeId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -210,13 +246,15 @@ public class PessoaCriteria implements Serializable, Criteria {
             Objects.equals(numero, that.numero) &&
             Objects.equals(bairro, that.bairro) &&
             Objects.equals(cep, that.cep) &&
+            Objects.equals(userId, that.userId) &&
+            Objects.equals(cidadeId, that.cidadeId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cpf, dataNascimento, telefone, rua, numero, bairro, cep, distinct);
+        return Objects.hash(id, cpf, dataNascimento, telefone, rua, numero, bairro, cep, userId, cidadeId, distinct);
     }
 
     // prettier-ignore
@@ -231,6 +269,8 @@ public class PessoaCriteria implements Serializable, Criteria {
             (numero != null ? "numero=" + numero + ", " : "") +
             (bairro != null ? "bairro=" + bairro + ", " : "") +
             (cep != null ? "cep=" + cep + ", " : "") +
+            (userId != null ? "userId=" + userId + ", " : "") +
+            (cidadeId != null ? "cidadeId=" + cidadeId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

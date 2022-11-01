@@ -43,7 +43,7 @@
             </span>
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
-            <li *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_USER']">
+            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']">
               <a
                 class="dropdown-item"
                 routerLink="estado"
@@ -55,7 +55,7 @@
                 <span jhiTranslate="global.menu.entities.estado">Estado</span>
               </a>
             </li>
-            <li *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_USER']">
+            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']">
               <a
                 class="dropdown-item"
                 routerLink="cidade"
@@ -90,8 +90,7 @@
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
         >
-          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu"
-             data-cy="adminMenu">
+          <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu" data-cy="adminMenu">
             <span>
               <fa-icon icon="users-cog"></fa-icon>
               <span jhiTranslate="global.menu.admin.main">Administration</span>
@@ -99,8 +98,7 @@
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="admin-menu">
             <li>
-              <a class="dropdown-item" routerLink="admin/user-management" routerLinkActive="active"
-                 (click)="collapseNavbar()">
+              <a class="dropdown-item" routerLink="admin/user-management" routerLinkActive="active" (click)="collapseNavbar()">
                 <fa-icon icon="users" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="global.menu.admin.userManagement">User management</span>
               </a>
