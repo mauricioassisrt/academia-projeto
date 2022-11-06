@@ -130,7 +130,8 @@
 
         <div class="row mb-3">
           <label class="form-label" jhiTranslate="academiaApp.pessoa.user" for="field_user">User</label>
-          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user">
+          <input *jhiHasAnyAuthority="['ROLE_CLIENTE']" type="text" class="form-control" disabled value="{{this.nomeUser}}"/>
+          <select *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']" class="form-control" id="field_user" data-cy="user" name="user" formControlName="user" >
             <option [ngValue]="null"></option>
             <option
               [ngValue]="userOption.id === editForm.get('user')!.value?.id ? editForm.get('user')!.value : userOption"
@@ -143,12 +144,12 @@
 
         <div class="row mb-3">
           <label class="form-label" jhiTranslate="academiaApp.pessoa.cidade" for="field_cidade">Cidade</label>
-          <select class="form-control" id="field_cidade" data-cy="cidade" name="cidade" formControlName="cidade">
+          <input *jhiHasAnyAuthority="['ROLE_CLIENTE']" type="text" class="form-control" disabled value="{{this.nomeCidade}}"/>
+          <select  *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']" class="form-control" id="field_cidade" data-cy="cidade" name="cidade" formControlName="cidade">
             <option [ngValue]="null"></option>
             <option
               [ngValue]="cidadeOption.id === editForm.get('cidade')!.value?.id ? editForm.get('cidade')!.value : cidadeOption"
-              *ngFor="let cidadeOption of cidadesSharedCollection; trackBy: trackCidadeById"
-            >
+              *ngFor="let cidadeOption of cidadesSharedCollection; trackBy: trackCidadeById">
               {{ cidadeOption.nomeCidade }}
             </option>
           </select>

@@ -18,7 +18,8 @@ import { CidadeService } from 'app/entities/cidade/service/cidade.service';
 })
 export class PessoaUpdateComponent implements OnInit {
   isSaving = false;
-
+  nomeUser: string="";
+  nomeCidade: string="";
   usersSharedCollection: IUser[] = [];
   cidadesSharedCollection: ICidade[] = [];
 
@@ -48,6 +49,8 @@ export class PessoaUpdateComponent implements OnInit {
       this.updateForm(pessoa);
 
       this.loadRelationshipsOptions();
+      this.nomeUser=pessoa.user.firstName;
+      this.nomeCidade=pessoa.cidade.nomeCidade;
     });
   }
 
