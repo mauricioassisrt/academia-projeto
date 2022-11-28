@@ -47,9 +47,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/academia
-    username: root
-    password:
+    url: jdbc:mysql://50.116.112.191/agrodes_academia
+    username: 'agrodes_agrodes_acad'
+    password: '@X8mmkflt'
     hikari:
       poolName: Hikari
       auto-commit: false
