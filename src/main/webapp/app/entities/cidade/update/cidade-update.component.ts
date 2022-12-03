@@ -7,20 +7,26 @@ import { finalize, map } from 'rxjs/operators';
 
 import { ICidade, Cidade } from '../cidade.model';
 import { CidadeService } from '../service/cidade.service';
-import { IEstado } from 'app/entities/estado/estado.model';
 import { EstadoService } from 'app/entities/estado/service/estado.service';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
+import {IEstado} from "../../estado/estado.model";
 
 @Component({
   selector: 'jhi-cidade-update',
   templateUrl: './cidade-update.component.html',
 })
 export class CidadeUpdateComponent implements OnInit {
+  nomeEstado:string | undefined="";
   isSaving = false;
-
   estadosSharedCollection: IEstado[] = [];
   usersSharedCollection: IUser[] = [];
+
+  editFormEstado = this.fb.group({
+    id: [],
+    nomeEstado: [null, [Validators.required, Validators.minLength(3)]],
+    sigla: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
+  });
 
   editForm = this.fb.group({
     id: [],
@@ -41,11 +47,18 @@ export class CidadeUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ cidade }) => {
       this.updateForm(cidade);
-
       this.loadRelationshipsOptions();
     });
   }
 
+  selecionarItem(estado:IEstado) {
+    this.editFormEstado.patchValue({
+      id: estado.id,
+      nomeEstado: estado.nomeEstado,
+      sigla: estado.sigla,
+    });
+
+  }
   previousState(): void {
     window.history.back();
   }
@@ -95,7 +108,7 @@ export class CidadeUpdateComponent implements OnInit {
       estado: cidade.estado,
       user: cidade.user,
     });
-
+    this.nomeEstado=cidade.estado?.nomeEstado;
     this.estadosSharedCollection = this.estadoService.addEstadoToCollectionIfMissing(this.estadosSharedCollection, cidade.estado);
     this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, cidade.user);
   }
@@ -120,7 +133,7 @@ export class CidadeUpdateComponent implements OnInit {
       id: this.editForm.get(['id'])!.value,
       nomeCidade: this.editForm.get(['nomeCidade'])!.value,
       observacao: this.editForm.get(['observacao'])!.value,
-      estado: this.editForm.get(['estado'])!.value,
+      estado: this.editFormEstado.value,
       user: this.editForm.get(['user'])!.value,
     };
   }

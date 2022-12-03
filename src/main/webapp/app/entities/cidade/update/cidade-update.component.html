@@ -65,8 +65,14 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" jhiTranslate="academiaApp.cidade.estado" for="field_estado">Estado</label>
-          <select class="form-control" id="field_estado" data-cy="estado" name="estado" formControlName="estado">
+          <label class="form-label" jhiTranslate="academiaApp.cidade.estado" >Estado</label>
+          <ng-select  (change)="selecionarItem($event)" placeholder="{{nomeEstado}}">
+            <ng-option [value]="estadoOption"
+              *ngFor="let estadoOption of estadosSharedCollection; trackBy: trackEstadoById">
+              {{ estadoOption.nomeEstado }}
+            </ng-option>
+          </ng-select>
+        <!--  <select class="form-control" id="field_estado" data-cy="estado" name="estado" formControlName="estado">
             <option [ngValue]="null"></option>
             <option
               [ngValue]="estadoOption.id === editForm.get('estado')!.value?.id ? editForm.get('estado')!.value : estadoOption"
@@ -74,7 +80,7 @@
             >
               {{ estadoOption.sigla }}
             </option>
-          </select>
+          </select>-->
         </div>
 
         <div class="row mb-3">
@@ -89,6 +95,9 @@
             </option>
           </select>
         </div>
+      </div>
+      <div >
+
       </div>
 
       <div>
