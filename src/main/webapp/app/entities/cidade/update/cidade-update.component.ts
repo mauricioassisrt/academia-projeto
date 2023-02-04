@@ -11,6 +11,7 @@ import { EstadoService } from 'app/entities/estado/service/estado.service';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
 import {IEstado} from "../../estado/estado.model";
+import {ASC, DESC} from "../../../config/pagination.constants";
 
 @Component({
   selector: 'jhi-cidade-update',
@@ -21,6 +22,9 @@ export class CidadeUpdateComponent implements OnInit {
   isSaving = false;
   estadosSharedCollection: IEstado[] = [];
   usersSharedCollection: IUser[] = [];
+  nomeEstadoPesquisa:string ="";
+  predicate!: string;
+  ascending!: boolean;
 
   editFormEstado = this.fb.group({
     id: [],
@@ -136,5 +140,23 @@ export class CidadeUpdateComponent implements OnInit {
       estado: this.editFormEstado.value,
       user: this.editForm.get(['user'])!.value,
     };
+  }
+  public digitar(valor:any){
+    this.estadoService
+      .query({
+        page: 0,
+        size:30,
+        'nomeEstado.contains': valor.target.value
+      })
+      .pipe(map((res: HttpResponse<IEstado[]>) => res.body ?? []))
+      .pipe(map((estados: IEstado[]) => this.estadoService.addEstadoToCollectionIfMissing(estados, this.editForm.get('estado')!.value)))
+      .subscribe((estados: IEstado[]) => (this.estadosSharedCollection = estados));
+  }
+  protected sort(): string[] {
+    const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
+    if (this.predicate !== 'id') {
+      result.push('id');
+    }
+    return result;
   }
 }

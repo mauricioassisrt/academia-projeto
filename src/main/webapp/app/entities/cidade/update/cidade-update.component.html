@@ -66,7 +66,7 @@
 
         <div class="row mb-3">
           <label class="form-label" jhiTranslate="academiaApp.cidade.estado" >Estado</label>
-          <ng-select  (change)="selecionarItem($event)" placeholder="{{nomeEstado}}">
+          <ng-select  (change)="selecionarItem($event)"   (keyup.enter)="digitar($event)" placeholder="{{nomeEstado}}">
             <ng-option [value]="estadoOption"
               *ngFor="let estadoOption of estadosSharedCollection; trackBy: trackEstadoById">
               {{ estadoOption.nomeEstado }}
