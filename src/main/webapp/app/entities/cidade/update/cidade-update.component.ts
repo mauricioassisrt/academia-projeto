@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
+import {Component, OnInit} from '@angular/core';
+import {HttpResponse} from '@angular/common/http';
+import {FormBuilder, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Observable} from 'rxjs';
+import {finalize, map} from 'rxjs/operators';
 
-import { ICidade, Cidade } from '../cidade.model';
-import { CidadeService } from '../service/cidade.service';
-import { EstadoService } from 'app/entities/estado/service/estado.service';
-import { IUser } from 'app/entities/user/user.model';
-import { UserService } from 'app/entities/user/user.service';
+import {ICidade, Cidade} from '../cidade.model';
+import {CidadeService} from '../service/cidade.service';
+import {EstadoService} from 'app/entities/estado/service/estado.service';
+import {IUser} from 'app/entities/user/user.model';
+import {UserService} from 'app/entities/user/user.service';
 import {IEstado} from "../../estado/estado.model";
 import {ASC, DESC} from "../../../config/pagination.constants";
 
@@ -18,11 +18,12 @@ import {ASC, DESC} from "../../../config/pagination.constants";
   templateUrl: './cidade-update.component.html',
 })
 export class CidadeUpdateComponent implements OnInit {
-  nomeEstado:string | undefined="";
+  nomeEstado: string | undefined = "";
+  estado:IEstado={};
   isSaving = false;
   estadosSharedCollection: IEstado[] = [];
   usersSharedCollection: IUser[] = [];
-  nomeEstadoPesquisa:string ="";
+  nomeEstadoPesquisa: string = "";
   predicate!: string;
   ascending!: boolean;
 
@@ -46,16 +47,17 @@ export class CidadeUpdateComponent implements OnInit {
     protected userService: UserService,
     protected activatedRoute: ActivatedRoute,
     protected fb: FormBuilder
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ cidade }) => {
+    this.activatedRoute.data.subscribe(({cidade}) => {
       this.updateForm(cidade);
       this.loadRelationshipsOptions();
     });
   }
 
-  selecionarItem(estado:IEstado) {
+  selecionarItem(estado: IEstado) {
     this.editFormEstado.patchValue({
       id: estado.id,
       nomeEstado: estado.nomeEstado,
@@ -63,6 +65,7 @@ export class CidadeUpdateComponent implements OnInit {
     });
 
   }
+
   previousState(): void {
     window.history.back();
   }
@@ -112,22 +115,26 @@ export class CidadeUpdateComponent implements OnInit {
       estado: cidade.estado,
       user: cidade.user,
     });
-    this.nomeEstado=cidade.estado?.nomeEstado;
-    this.estadosSharedCollection = this.estadoService.addEstadoToCollectionIfMissing(this.estadosSharedCollection, cidade.estado);
-    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, cidade.user);
+    this.nomeEstado = cidade.estado?.nomeEstado;
+    this.estadosSharedCollection = this.estadoService.addEstadoToCollectionIfMissing(this.estadosSharedCollection,
+      cidade.estado);
+    this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection,
+      cidade.user);
   }
 
   protected loadRelationshipsOptions(): void {
     this.estadoService
       .query()
       .pipe(map((res: HttpResponse<IEstado[]>) => res.body ?? []))
-      .pipe(map((estados: IEstado[]) => this.estadoService.addEstadoToCollectionIfMissing(estados, this.editForm.get('estado')!.value)))
+      .pipe(map((estados: IEstado[]) => this.estadoService.addEstadoToCollectionIfMissing(estados,
+        this.editForm.get('estado')!.value)))
       .subscribe((estados: IEstado[]) => (this.estadosSharedCollection = estados));
 
     this.userService
       .query()
       .pipe(map((res: HttpResponse<IUser[]>) => res.body ?? []))
-      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing(users, this.editForm.get('user')!.value)))
+      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing(users,
+        this.editForm.get('user')!.value)))
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
   }
 
@@ -141,22 +148,51 @@ export class CidadeUpdateComponent implements OnInit {
       user: this.editForm.get(['user'])!.value,
     };
   }
-  public digitar(valor:any){
+
+  public digitar(valor: any) {
+    this.estadosSharedCollection = []
     this.estadoService
       .query({
         page: 0,
-        size:30,
+        size: 30,
         'nomeEstado.contains': valor.target.value
       })
       .pipe(map((res: HttpResponse<IEstado[]>) => res.body ?? []))
       .pipe(map((estados: IEstado[]) => this.estadoService.addEstadoToCollectionIfMissing(estados, this.editForm.get('estado')!.value)))
       .subscribe((estados: IEstado[]) => (this.estadosSharedCollection = estados));
+
+    if(this.estadosSharedCollection.length==0){
+      this.estadosSharedCollection=[]
+      this.nomeEstado=""
+      this.createFromFormAlte()
+      // this.editFormEstado = this.fb.group({
+      //   id: this.fb.array([]),
+      //   nomeEstado: this.fb.array([]),
+      //
+      // })
+     const estado= this.editForm.get('estado')
+      estado?.reset();
+      // this.editForm = this.fb.group({
+      //   estado: this.fb.array([])
+      // })
+     }
   }
+
   protected sort(): string[] {
     const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
     if (this.predicate !== 'id') {
       result.push('id');
     }
     return result;
+  }
+  protected createFromFormAlte(): ICidade {
+    return {
+      ...new Cidade(),
+      id: this.editForm.get(['id'])!.value,
+      nomeCidade: this.editForm.get(['nomeCidade'])!.value,
+      observacao: this.editForm.get(['observacao'])!.value,
+      estado: {},
+      user: this.editForm.get(['user'])!.value,
+    };
   }
 }
