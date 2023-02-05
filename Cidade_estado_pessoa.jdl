@@ -1,0 +1,27 @@
+
+entity Estado {
+	nomeEstado String  required minlength(3) unique
+    sigla String required maxlength(2) minlength(2) unique
+}
+
+entity Cidade {
+	nomeCidade String required minlength(3)
+    observacao String minlength(20)
+}
+
+
+entity Pessoa{
+	cpf String required unique
+	dataNascimento LocalDate required
+    telefone String required
+	rua String required minlength(5)
+    numero String
+    bairro String required minlength(5)
+    cep String required minlength(10)
+}
+
+relationship ManyToOne {
+  Cidade {estado(sigla)} to Estado
+  Pessoa {user(firstName)} to User
+  Pessoa {cidade(nomeCidade)} to Cidade
+ }

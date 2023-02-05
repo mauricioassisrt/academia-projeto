@@ -43,7 +43,7 @@
             </span>
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
-            <li>
+            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']">
               <a
                 class="dropdown-item"
                 routerLink="estado"
@@ -55,7 +55,7 @@
                 <span jhiTranslate="global.menu.entities.estado">Estado</span>
               </a>
             </li>
-            <li>
+            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']">
               <a
                 class="dropdown-item"
                 routerLink="cidade"
@@ -67,11 +67,23 @@
                 <span jhiTranslate="global.menu.entities.cidade">Cidade</span>
               </a>
             </li>
+            <li>
+              <a
+                class="dropdown-item"
+                routerLink="pessoa"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.entities.pessoa">Pessoa</span>
+              </a>
+            </li>
             <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
           </ul>
         </li>
         <li
-          *jhiHasAnyAuthority="'ROLE_ADMIN'"
+          *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']"
           ngbDropdown
           class="nav-item dropdown pointer"
           display="dynamic"

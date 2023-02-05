@@ -158,7 +158,8 @@ public class CidadeResource {
     ) {
         log.debug("REST request to get Cidades by criteria: {}", criteria);
         Page<Cidade> page = cidadeQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);return ResponseEntity.ok().headers(headers).body(page.getContent());
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**

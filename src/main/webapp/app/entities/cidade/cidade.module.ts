@@ -5,9 +5,10 @@ import { CidadeDetailComponent } from './detail/cidade-detail.component';
 import { CidadeUpdateComponent } from './update/cidade-update.component';
 import { CidadeDeleteDialogComponent } from './delete/cidade-delete-dialog.component';
 import { CidadeRoutingModule } from './route/cidade-routing.module';
+import {NgSelectModule} from "@ng-select/ng-select";
 
 @NgModule({
-  imports: [SharedModule, CidadeRoutingModule],
+    imports: [SharedModule, CidadeRoutingModule, NgSelectModule],
   declarations: [CidadeComponent, CidadeDetailComponent, CidadeUpdateComponent, CidadeDeleteDialogComponent],
   entryComponents: [CidadeDeleteDialogComponent],
 })

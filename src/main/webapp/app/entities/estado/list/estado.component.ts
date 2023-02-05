@@ -38,7 +38,7 @@ export class EstadoComponent implements OnInit {
     this.estadoService
       .query({
         page: pageToLoad - 1,
-        size: this.itemsPerPage,
+        size: 50,
         sort: this.sort(),
       })
       .subscribe({
@@ -72,7 +72,7 @@ export class EstadoComponent implements OnInit {
     });
   }
 
-  protected sort(): string[] {
+  public sort(): string[] {
     const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
     if (this.predicate !== 'id') {
       result.push('id');
@@ -95,7 +95,7 @@ export class EstadoComponent implements OnInit {
     });
   }
 
-  protected onSuccess(data: IEstado[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
+  public onSuccess(data: IEstado[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     if (navigate) {
@@ -111,7 +111,7 @@ export class EstadoComponent implements OnInit {
     this.ngbPaginationPage = this.page;
   }
 
-  protected onError(): void {
+  public onError(): void {
     this.ngbPaginationPage = this.page ?? 1;
   }
 }

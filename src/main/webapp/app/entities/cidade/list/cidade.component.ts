@@ -1,14 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {HttpHeaders, HttpResponse} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
-import {combineLatest} from 'rxjs';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit } from '@angular/core';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import {ICidade} from '../cidade.model';
+import { ICidade } from '../cidade.model';
 
-import {ASC, DESC, ITEMS_PER_PAGE, SORT} from 'app/config/pagination.constants';
-import {CidadeService} from '../service/cidade.service';
-import {CidadeDeleteDialogComponent} from '../delete/cidade-delete-dialog.component';
+import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/config/pagination.constants';
+import { CidadeService } from '../service/cidade.service';
+import { CidadeDeleteDialogComponent } from '../delete/cidade-delete-dialog.component';
 
 @Component({
   selector: 'jhi-cidade',
@@ -141,6 +141,4 @@ export class CidadeComponent implements OnInit {
       });
 
   }
-
-
 }
